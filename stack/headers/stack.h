@@ -4,7 +4,7 @@
 
 #include "common.h"
 
-#if defined(STACK_LOG)
+#if defined(STACK_DEBUG)
 	#define push(data) _push(data, __FILEW__, __LINE__)
 	#define pop() _pop(__FILEW__, __LINE__)
 #else 
@@ -31,12 +31,12 @@ public:
 	}
 
 	bool _push(T data
-		#if defined(STACK_LOG)
+		#if defined(STACK_DEBUG)
 			,const wchar_t* file, int line
 		#endif
 	);
 	bool _pop(
-		#if defined(STACK_LOG)
+		#if defined(STACK_DEBUG)
 			const wchar_t* file, int line
 		#endif
 	);
@@ -54,14 +54,14 @@ private:
 	public:
 		inline stNode(T& data){
 			_data = data;
-			#if defined(STACK_LOG)
+			#if defined(STACK_DEBUG)
 				_pushFile = nullptr;
 				_pushLine = 0;
 				_popFile  = nullptr;
 				_popFile  = 0;
 			#endif
 		}
-		#if defined(STACK_LOG)
+		#if defined(STACK_DEBUG)
 			inline void pushLog(const wchar_t* file, int line){
 				_pushFile = (wchar_t*)file;
 				_pushLine = line;
@@ -73,7 +73,7 @@ private:
 		#endif
 	private:
 		T _data;
-		#if defined(STACK_LOG)
+		#if defined(STACK_DEBUG)
 			wchar_t* _pushFile;
 			int _pushLine;
 			wchar_t* _popFile;
@@ -101,7 +101,7 @@ CStack<T>::~CStack() {
 
 template<typename T>
 bool CStack<T>::_push(T data
-	#if defined(STACK_LOG)
+	#if defined(STACK_DEBUG)
 		,const wchar_t* file, int line
 	#endif
 ) {
@@ -113,7 +113,7 @@ bool CStack<T>::_push(T data
 	stNode* node = &_data[_size];
 	new (node) stNode(data);
 
-	#if defined(STACK_LOG)
+	#if defined(STACK_DEBUG)
 		node->pushLog(file, line);
 	#endif
 
@@ -125,7 +125,7 @@ bool CStack<T>::_push(T data
 
 template<typename T>
 bool CStack<T>::_pop(
-	#if defined(STACK_LOG)
+	#if defined(STACK_DEBUG)
 		const wchar_t* file, int line
 	#endif
 ) {
@@ -134,7 +134,7 @@ bool CStack<T>::_pop(
 		return false;
 	}
 
-	#if defined(STACK_LOG)
+	#if defined(STACK_DEBUG)
 		_data[_size - 1].popLog(file, line);
 	#endif
 
