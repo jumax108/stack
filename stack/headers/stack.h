@@ -35,11 +35,24 @@ public:
 			,const wchar_t* file, int line
 		#endif
 	);
-	bool _pop(
-		#if defined(STACK_LOG)
-			const wchar_t* file, int line
-		#endif
-	);
+	inline bool _pop(
+#if defined(STACK_LOG)
+		const wchar_t* file, int line
+#endif
+	) {
+
+		if (_size == 0) {
+			return false;
+		}
+
+#if defined(STACK_LOG)
+		_data[_size - 1].popLog(file, line);
+#endif
+
+		_size -= 1;
+
+		return true;
+	}
 	bool front(T* out);
 
 private:
@@ -71,8 +84,8 @@ private:
 				_popLine = line;
 			}
 		#endif
+			T _data;
 	private:
-		T _data;
 		#if defined(STACK_LOG)
 			wchar_t* _pushFile;
 			int _pushLine;
@@ -123,26 +136,6 @@ bool CStack<T>::_push(T data
 
 }
 
-template<typename T>
-bool CStack<T>::_pop(
-	#if defined(STACK_LOG)
-		const wchar_t* file, int line
-	#endif
-) {
-
-	if (_size == 0) {
-		return false;
-	}
-
-	#if defined(STACK_LOG)
-		_data[_size - 1].popLog(file, line);
-	#endif
-
-	_size -= 1;
-
-	return true;
-
-}
 
 template<typename T>
 bool CStack<T>::front(T* out) {
